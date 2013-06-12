@@ -28,7 +28,7 @@ struct gdt_ptr gp;
 
 /* This is in start.asm. We use this to properly reload
 *  the new segment registers */
-extern void gdt_flush();
+extern void _gdt_flush();
 
 /* Setup a descriptor in the Global Descriptor Table */
 void gdt_set_gate(int num, unsigned long base, unsigned long limit, unsigned char access, unsigned char gran)
@@ -74,5 +74,5 @@ void gdt_install()
     gdt_set_gate(2, 0, 0xFFFFFFFF, 0x92, 0xCF);
 
     /* Flush out the old GDT and install the new changes! */
-    gdt_flush();
+    _gdt_flush();
 }

@@ -31,7 +31,7 @@ struct idt_entry idt[256];
 struct idt_ptr idtp;
 
 /* This exists in 'start.asm', and is used to load our IDT */
-extern void idt_load();
+extern void _idt_load();
 
 /* Use this function to set an entry in the IDT. Alot simpler
 *  than twiddling with the GDT ;) */
@@ -63,5 +63,5 @@ void idt_install()
 
 
     /* Points the processor's internal register to the new IDT */
-    idt_load();
+    _idt_load();
 }

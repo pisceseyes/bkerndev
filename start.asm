@@ -43,8 +43,8 @@ mboot:
 ; will insert an 'extern _main', followed by 'call _main', right
 ; before the 'jmp $'.
 stublet:
-    extern _main
-    call _main
+    extern main
+    call main
     jmp $
 
 ; This will set up our new segment registers. We need to do
@@ -52,9 +52,9 @@ stublet:
 ; far jump. A jump that includes a segment as well as an offset.
 ; This is declared in C as 'extern void gdt_flush();'
 global _gdt_flush
-extern _gp
+extern gp
 _gdt_flush:
-    lgdt [_gp]
+    lgdt [gp]
     mov ax, 0x10
     mov ds, ax
     mov es, ax
@@ -68,9 +68,9 @@ flush2:
 ; Loads the IDT defined in '_idtp' into the processor.
 ; This is declared in C as 'extern void idt_load();'
 global _idt_load
-extern _idtp
+extern idtp
 _idt_load:
-    lidt [_idtp]
+    lidt [idtp]
     ret
 
 ; In just a few pages in this tutorial, we will add our Interrupt
@@ -329,7 +329,7 @@ _isr31:
 
 ; We call a C function in here. We need to let the assembler know
 ; that '_fault_handler' exists in another file
-extern _fault_handler
+extern fault_handler
 
 ; This is our common ISR stub. It saves the processor state, sets
 ; up for kernel mode segments, calls the C-level fault handler,
@@ -347,7 +347,7 @@ isr_common_stub:
     mov gs, ax
     mov eax, esp
     push eax
-    mov eax, _fault_handler
+    mov eax, fault_handler
     call eax
     pop eax
     pop gs
@@ -487,7 +487,7 @@ _irq15:
     push byte 47
     jmp irq_common_stub
 
-extern _irq_handler
+extern irq_handler
 
 irq_common_stub:
     pusha
@@ -504,7 +504,7 @@ irq_common_stub:
     mov eax, esp
 
     push eax
-    mov eax, _irq_handler
+    mov eax, irq_handler
     call eax
     pop eax
 
